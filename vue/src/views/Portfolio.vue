@@ -1,5 +1,6 @@
 <template>
-  <MDBTable>
+  <div style="overflow:auto; height: 500px;">
+  <MDBTable border="primary">
     <thead>
       <tr>
         <th scope="col">Chain</th>
@@ -17,11 +18,10 @@
       </tr>
     </tbody>
   </MDBTable>
+</div>
 </template>
 
 <script>
-let id = 0
-
    import {
     MDBTable,
     MDBBtn,
@@ -34,6 +34,12 @@ let id = 0
     data() {
     return {
       todos: [
+      { id: 1, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'false'},
+      { id: 2, chain: "Evmos", tx: 'https://www.mintscan.io/osmosis/txs/87FF62825875D3FF640BD29E6DFA19E41C9B432A849DC0C98D2709FA986F39FD', timestamp:'1669695924', invariantbroken:'false'},
+      { id: 3, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'true'},
+      { id: 4, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'false'},
+      { id: 5, chain: "Evmos", tx: 'https://www.mintscan.io/osmosis/txs/87FF62825875D3FF640BD29E6DFA19E41C9B432A849DC0C98D2709FA986F39FD', timestamp:'1669695924', invariantbroken:'false'},
+      { id: 6, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'true'},
       { id: 1, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'false'},
       { id: 2, chain: "Evmos", tx: 'https://www.mintscan.io/osmosis/txs/87FF62825875D3FF640BD29E6DFA19E41C9B432A849DC0C98D2709FA986F39FD', timestamp:'1669695924', invariantbroken:'false'},
       { id: 3, chain: "Osmosis", tx: 'https://www.mintscan.io/evmos/txs/4B9E3084A7B5BF8D619A29F3F9C200519879A227BCE3F17575EA635E3706C348', timestamp:'1669695924', invariantbroken:'true'},
