@@ -5,6 +5,7 @@ import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagin
 import { BridgeStatus } from "./bridge_status";
 import { Params } from "./params";
 import { Post } from "./post";
+import { SentAction } from "./sent_action";
 import { SentPost } from "./sent_post";
 import { TimedoutPost } from "./timedout_post";
 
@@ -76,6 +77,23 @@ export interface QueryGetBridgeStatusRequest {
 
 export interface QueryGetBridgeStatusResponse {
   BridgeStatus: BridgeStatus | undefined;
+}
+
+export interface QueryGetSentActionRequest {
+  id: number;
+}
+
+export interface QueryGetSentActionResponse {
+  SentAction: SentAction | undefined;
+}
+
+export interface QueryAllSentActionRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllSentActionResponse {
+  SentAction: SentAction[];
+  pagination: PageResponse | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -889,6 +907,218 @@ export const QueryGetBridgeStatusResponse = {
   },
 };
 
+function createBaseQueryGetSentActionRequest(): QueryGetSentActionRequest {
+  return { id: 0 };
+}
+
+export const QueryGetSentActionRequest = {
+  encode(message: QueryGetSentActionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSentActionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetSentActionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetSentActionRequest {
+    return { id: isSet(object.id) ? Number(object.id) : 0 };
+  },
+
+  toJSON(message: QueryGetSentActionRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetSentActionRequest>, I>>(object: I): QueryGetSentActionRequest {
+    const message = createBaseQueryGetSentActionRequest();
+    message.id = object.id ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryGetSentActionResponse(): QueryGetSentActionResponse {
+  return { SentAction: undefined };
+}
+
+export const QueryGetSentActionResponse = {
+  encode(message: QueryGetSentActionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.SentAction !== undefined) {
+      SentAction.encode(message.SentAction, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSentActionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetSentActionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.SentAction = SentAction.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetSentActionResponse {
+    return { SentAction: isSet(object.SentAction) ? SentAction.fromJSON(object.SentAction) : undefined };
+  },
+
+  toJSON(message: QueryGetSentActionResponse): unknown {
+    const obj: any = {};
+    message.SentAction !== undefined
+      && (obj.SentAction = message.SentAction ? SentAction.toJSON(message.SentAction) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetSentActionResponse>, I>>(object: I): QueryGetSentActionResponse {
+    const message = createBaseQueryGetSentActionResponse();
+    message.SentAction = (object.SentAction !== undefined && object.SentAction !== null)
+      ? SentAction.fromPartial(object.SentAction)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllSentActionRequest(): QueryAllSentActionRequest {
+  return { pagination: undefined };
+}
+
+export const QueryAllSentActionRequest = {
+  encode(message: QueryAllSentActionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSentActionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllSentActionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSentActionRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+  },
+
+  toJSON(message: QueryAllSentActionRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllSentActionRequest>, I>>(object: I): QueryAllSentActionRequest {
+    const message = createBaseQueryAllSentActionRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllSentActionResponse(): QueryAllSentActionResponse {
+  return { SentAction: [], pagination: undefined };
+}
+
+export const QueryAllSentActionResponse = {
+  encode(message: QueryAllSentActionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.SentAction) {
+      SentAction.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSentActionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllSentActionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.SentAction.push(SentAction.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSentActionResponse {
+    return {
+      SentAction: Array.isArray(object?.SentAction) ? object.SentAction.map((e: any) => SentAction.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryAllSentActionResponse): unknown {
+    const obj: any = {};
+    if (message.SentAction) {
+      obj.SentAction = message.SentAction.map((e) => e ? SentAction.toJSON(e) : undefined);
+    } else {
+      obj.SentAction = [];
+    }
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllSentActionResponse>, I>>(object: I): QueryAllSentActionResponse {
+    const message = createBaseQueryAllSentActionResponse();
+    message.SentAction = object.SentAction?.map((e) => SentAction.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -907,6 +1137,10 @@ export interface Query {
   TimedoutPostAll(request: QueryAllTimedoutPostRequest): Promise<QueryAllTimedoutPostResponse>;
   /** Queries a BridgeStatus by index. */
   BridgeStatus(request: QueryGetBridgeStatusRequest): Promise<QueryGetBridgeStatusResponse>;
+  /** Queries a SentAction by id. */
+  SentAction(request: QueryGetSentActionRequest): Promise<QueryGetSentActionResponse>;
+  /** Queries a list of SentAction items. */
+  SentActionAll(request: QueryAllSentActionRequest): Promise<QueryAllSentActionResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -921,6 +1155,8 @@ export class QueryClientImpl implements Query {
     this.TimedoutPost = this.TimedoutPost.bind(this);
     this.TimedoutPostAll = this.TimedoutPostAll.bind(this);
     this.BridgeStatus = this.BridgeStatus.bind(this);
+    this.SentAction = this.SentAction.bind(this);
+    this.SentActionAll = this.SentActionAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -968,6 +1204,18 @@ export class QueryClientImpl implements Query {
     const data = QueryGetBridgeStatusRequest.encode(request).finish();
     const promise = this.rpc.request("planet.blog.Query", "BridgeStatus", data);
     return promise.then((data) => QueryGetBridgeStatusResponse.decode(new _m0.Reader(data)));
+  }
+
+  SentAction(request: QueryGetSentActionRequest): Promise<QueryGetSentActionResponse> {
+    const data = QueryGetSentActionRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.blog.Query", "SentAction", data);
+    return promise.then((data) => QueryGetSentActionResponse.decode(new _m0.Reader(data)));
+  }
+
+  SentActionAll(request: QueryAllSentActionRequest): Promise<QueryAllSentActionResponse> {
+    const data = QueryAllSentActionRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.blog.Query", "SentActionAll", data);
+    return promise.then((data) => QueryAllSentActionResponse.decode(new _m0.Reader(data)));
   }
 }
 

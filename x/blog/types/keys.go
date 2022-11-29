@@ -47,3 +47,8 @@ const (
 const (
 	BridgeStatusKey = "BridgeStatus/value/"
 )
+
+const (
+	SentActionKey      = "SentAction/value/"
+	SentActionCountKey = "SentAction/count/"
+)

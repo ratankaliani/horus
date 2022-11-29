@@ -108,7 +108,16 @@ func (k Keeper) OnAcknowledgementIbcHorusActionPacket(ctx sdk.Context, packet ch
 		}
 
 		// TODO: successful acknowledgement logic
-
+		k.AppendSentAction(
+			ctx,
+			types.SentAction{
+				Creator:  data.Creator,
+				ActionID: packetAck.ActionID,
+				Title:    data.Title,
+				Action:   data.Action,
+				Chain:    packet.DestinationPort + "-" + packet.DestinationChannel,
+			},
+		)
 		return nil
 	default:
 		// The counter-party module doesn't implement the correct acknowledgment format

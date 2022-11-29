@@ -16,6 +16,7 @@ func DefaultGenesis() *GenesisState {
 		SentPostList:     []SentPost{},
 		TimedoutPostList: []TimedoutPost{},
 		BridgeStatus:     nil,
+		SentActionList:   []SentAction{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -62,6 +63,18 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("timedoutPost id should be lower or equal than the last id")
 		}
 		timedoutPostIdMap[elem.Id] = true
+	}
+	// Check for duplicated ID in sentAction
+	sentActionIdMap := make(map[uint64]bool)
+	sentActionCount := gs.GetSentActionCount()
+	for _, elem := range gs.SentActionList {
+		if _, ok := sentActionIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for sentAction")
+		}
+		if elem.Id >= sentActionCount {
+			return fmt.Errorf("sentAction id should be lower or equal than the last id")
+		}
+		sentActionIdMap[elem.Id] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

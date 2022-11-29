@@ -34,6 +34,7 @@ export interface IbcPostPacketAck {
 export interface IbcHorusActionPacketData {
   title: string;
   action: string;
+  creator: string;
 }
 
 /** IbcHorusActionPacketAck defines a struct for the packet acknowledgment */
@@ -273,7 +274,7 @@ export const IbcPostPacketAck = {
 };
 
 function createBaseIbcHorusActionPacketData(): IbcHorusActionPacketData {
-  return { title: "", action: "" };
+  return { title: "", action: "", creator: "" };
 }
 
 export const IbcHorusActionPacketData = {
@@ -283,6 +284,9 @@ export const IbcHorusActionPacketData = {
     }
     if (message.action !== "") {
       writer.uint32(18).string(message.action);
+    }
+    if (message.creator !== "") {
+      writer.uint32(26).string(message.creator);
     }
     return writer;
   },
@@ -300,6 +304,9 @@ export const IbcHorusActionPacketData = {
         case 2:
           message.action = reader.string();
           break;
+        case 3:
+          message.creator = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -312,6 +319,7 @@ export const IbcHorusActionPacketData = {
     return {
       title: isSet(object.title) ? String(object.title) : "",
       action: isSet(object.action) ? String(object.action) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
     };
   },
 
@@ -319,6 +327,7 @@ export const IbcHorusActionPacketData = {
     const obj: any = {};
     message.title !== undefined && (obj.title = message.title);
     message.action !== undefined && (obj.action = message.action);
+    message.creator !== undefined && (obj.creator = message.creator);
     return obj;
   },
 
@@ -326,6 +335,7 @@ export const IbcHorusActionPacketData = {
     const message = createBaseIbcHorusActionPacketData();
     message.title = object.title ?? "";
     message.action = object.action ?? "";
+    message.creator = object.creator ?? "";
     return message;
   },
 };

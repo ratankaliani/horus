@@ -52,6 +52,15 @@ func TestGenesisState_Validate(t *testing.T) {
 				BridgeStatus: &types.BridgeStatus{
 					IsShutdown: "28",
 				},
+				SentActionList: []types.SentAction{
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				SentActionCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -131,6 +140,32 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				TimedoutPostCount: 0,
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated sentAction",
+			genState: &types.GenesisState{
+				SentActionList: []types.SentAction{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid sentAction count",
+			genState: &types.GenesisState{
+				SentActionList: []types.SentAction{
+					{
+						Id: 1,
+					},
+				},
+				SentActionCount: 0,
 			},
 			valid: false,
 		},

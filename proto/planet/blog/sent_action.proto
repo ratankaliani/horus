@@ -1,0 +1,14 @@
+syntax = "proto3";
+package planet.blog;
+
+option go_package = "planet/x/blog/types";
+
+message SentAction {
+  uint64 id = 1;
+  string actionID = 2; 
+  string title = 3; 
+  string chain = 4; 
+  string action = 5; 
+  string creator = 6; 
+  
+}

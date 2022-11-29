@@ -44,6 +44,15 @@ func TestGenesis(t *testing.T) {
 		BridgeStatus: &types.BridgeStatus{
 			IsShutdown: "60",
 		},
+		SentActionList: []types.SentAction{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		SentActionCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -64,5 +73,7 @@ func TestGenesis(t *testing.T) {
 	require.ElementsMatch(t, genesisState.TimedoutPostList, got.TimedoutPostList)
 	require.Equal(t, genesisState.TimedoutPostCount, got.TimedoutPostCount)
 	require.Equal(t, genesisState.BridgeStatus, got.BridgeStatus)
+	require.ElementsMatch(t, genesisState.SentActionList, got.SentActionList)
+	require.Equal(t, genesisState.SentActionCount, got.SentActionCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
