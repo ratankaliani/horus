@@ -13,24 +13,16 @@ import (
 	host "github.com/cosmos/ibc-go/v5/modules/core/24-host"
 )
 
-// TransmitIbcPostPacket transmits the packet over IBC with the specified source port and source channel
-func (k Keeper) TransmitIbcPostPacket(
+// TransmitIbcHorusActionPacket transmits the packet over IBC with the specified source port and source channel
+func (k Keeper) TransmitIbcHorusActionPacket(
 	ctx sdk.Context,
-	packetData types.IbcPostPacketData,
+	packetData types.IbcHorusActionPacketData,
 	sourcePort,
 	sourceChannel string,
 	timeoutHeight clienttypes.Height,
 	timeoutTimestamp uint64,
 ) error {
-	val, found := k.GetBridgeStatus(ctx)
-	// On first send, we initialize bridge status
-	if !found {
-		k.SetBridgeStatus(ctx, types.BridgeStatus{IsShutdown: "no"})
-	} else {
-		if val.IsShutdown == "yes" {
-			return sdkerrors.Wrap(types.ErrBridgeIsShutdown, "bridge is shutdown")
-		}
-	}
+
 	sourceChannelEnd, found := k.ChannelKeeper.GetChannel(ctx, sourcePort, sourceChannel)
 	if !found {
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", sourcePort, sourceChannel)
@@ -76,30 +68,29 @@ func (k Keeper) TransmitIbcPostPacket(
 	return nil
 }
 
-// OnRecvIbcPostPacket processes packet reception
-func (k Keeper) OnRecvIbcPostPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcPostPacketData) (packetAck types.IbcPostPacketAck, err error) {
+// OnRecvIbcHorusActionPacket processes packet reception
+func (k Keeper) OnRecvIbcHorusActionPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcHorusActionPacketData) (packetAck types.IbcHorusActionPacketAck, err error) {
 	// validate packet data upon receiving
 	if err := data.ValidateBasic(); err != nil {
 		return packetAck, err
 	}
 
 	// TODO: packet reception logic
-	id := k.AppendPost(
-		ctx,
-		types.Post{
-			Creator: packet.SourcePort + "-" + packet.SourceChannel + "-" + data.Creator,
-			Title:   data.Title,
-			Content: data.Content,
-		},
-	)
-
-	packetAck.PostID = strconv.FormatUint(id, 10)
+	// On receive, we will set bridgeStatus's isShutdown depending on the horusAction
+	switch action := data.Action; action {
+	case "BridgeShutdown":
+		k.SetBridgeStatus(ctx, types.BridgeStatus{IsShutdown: "yes"})
+		packetAck.ActionID = strconv.FormatUint(0, 10)
+	case "BridgeRestore":
+		k.SetBridgeStatus(ctx, types.BridgeStatus{IsShutdown: "no"})
+		packetAck.ActionID = strconv.FormatUint(1, 10)
+	}
 	return packetAck, nil
 }
 
-// OnAcknowledgementIbcPostPacket responds to the the success or failure of a packet
+// OnAcknowledgementIbcHorusActionPacket responds to the the success or failure of a packet
 // acknowledgement written on the receiving chain.
-func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcPostPacketData, ack channeltypes.Acknowledgement) error {
+func (k Keeper) OnAcknowledgementIbcHorusActionPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcHorusActionPacketData, ack channeltypes.Acknowledgement) error {
 	switch dispatchedAck := ack.Response.(type) {
 	case *channeltypes.Acknowledgement_Error:
 
@@ -109,7 +100,7 @@ func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channelty
 		return nil
 	case *channeltypes.Acknowledgement_Result:
 		// Decode the packet acknowledgment
-		var packetAck types.IbcPostPacketAck
+		var packetAck types.IbcHorusActionPacketAck
 
 		if err := types.ModuleCdc.UnmarshalJSON(dispatchedAck.Result, &packetAck); err != nil {
 			// The counter-party module doesn't implement the correct acknowledgment format
@@ -117,15 +108,6 @@ func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channelty
 		}
 
 		// TODO: successful acknowledgement logic
-		k.AppendSentPost(
-			ctx,
-			types.SentPost{
-				Creator: data.Creator,
-				PostID:  packetAck.PostID,
-				Title:   data.Title,
-				Chain:   packet.DestinationPort + "-" + packet.DestinationChannel,
-			},
-		)
 
 		return nil
 	default:
@@ -134,17 +116,10 @@ func (k Keeper) OnAcknowledgementIbcPostPacket(ctx sdk.Context, packet channelty
 	}
 }
 
-// OnTimeoutIbcPostPacket responds to the case where a packet has not been transmitted because of a timeout
-func (k Keeper) OnTimeoutIbcPostPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcPostPacketData) error {
+// OnTimeoutIbcHorusActionPacket responds to the case where a packet has not been transmitted because of a timeout
+func (k Keeper) OnTimeoutIbcHorusActionPacket(ctx sdk.Context, packet channeltypes.Packet, data types.IbcHorusActionPacketData) error {
 
 	// TODO: packet timeout logic
-	k.AppendTimedoutPost(
-		ctx,
-		types.TimedoutPost{
-			Creator: data.Creator,
-			Title:   data.Title,
-			Chain:   packet.DestinationPort + "-" + packet.DestinationChannel,
-		},
-	)
+
 	return nil
 }

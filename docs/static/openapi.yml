@@ -74846,6 +74846,8 @@ definitions:
     properties:
       isShutdown:
         type: string
+  planet.blog.MsgSendIbcHorusActionResponse:
+    type: object
   planet.blog.MsgSendIbcPostResponse:
     type: object
   planet.blog.Params:

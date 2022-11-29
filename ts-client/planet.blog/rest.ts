@@ -13,6 +13,8 @@ export interface BlogBridgeStatus {
   isShutdown?: string;
 }
 
+export type BlogMsgSendIbcHorusActionResponse = object;
+
 export type BlogMsgSendIbcPostResponse = object;
 
 /**

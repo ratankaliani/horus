@@ -5,13 +5,15 @@ import { BlogPacketData } from "planet-client-ts/planet.blog/types"
 import { NoData } from "planet-client-ts/planet.blog/types"
 import { IbcPostPacketData } from "planet-client-ts/planet.blog/types"
 import { IbcPostPacketAck } from "planet-client-ts/planet.blog/types"
+import { IbcHorusActionPacketData } from "planet-client-ts/planet.blog/types"
+import { IbcHorusActionPacketAck } from "planet-client-ts/planet.blog/types"
 import { Params } from "planet-client-ts/planet.blog/types"
 import { Post } from "planet-client-ts/planet.blog/types"
 import { SentPost } from "planet-client-ts/planet.blog/types"
 import { TimedoutPost } from "planet-client-ts/planet.blog/types"
 
 
-export { BridgeStatus, BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, Params, Post, SentPost, TimedoutPost };
+export { BridgeStatus, BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, IbcHorusActionPacketData, IbcHorusActionPacketAck, Params, Post, SentPost, TimedoutPost };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -57,6 +59,8 @@ const getDefaultState = () => {
 						NoData: getStructure(NoData.fromPartial({})),
 						IbcPostPacketData: getStructure(IbcPostPacketData.fromPartial({})),
 						IbcPostPacketAck: getStructure(IbcPostPacketAck.fromPartial({})),
+						IbcHorusActionPacketData: getStructure(IbcHorusActionPacketData.fromPartial({})),
+						IbcHorusActionPacketAck: getStructure(IbcHorusActionPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						Post: getStructure(Post.fromPartial({})),
 						SentPost: getStructure(SentPost.fromPartial({})),
@@ -359,6 +363,19 @@ export default {
 		},
 		
 		
+		async sendMsgSendIbcHorusAction({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const result = await client.PlanetBlog.tx.sendMsgSendIbcHorusAction({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendIbcHorusAction:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSendIbcHorusAction:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgSendIbcPost({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -373,6 +390,19 @@ export default {
 			}
 		},
 		
+		async MsgSendIbcHorusAction({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.PlanetBlog.tx.msgSendIbcHorusAction({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendIbcHorusAction:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSendIbcHorusAction:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		async MsgSendIbcPost({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)

@@ -8,6 +8,10 @@ export interface BlogPacketData {
     | NoData
     | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field */
+  ibcHorusActionPacket:
+    | IbcHorusActionPacketData
+    | undefined;
+  /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   ibcPostPacket: IbcPostPacketData | undefined;
 }
 
@@ -26,14 +30,28 @@ export interface IbcPostPacketAck {
   postID: string;
 }
 
+/** IbcHorusActionPacketData defines a struct for the packet payload */
+export interface IbcHorusActionPacketData {
+  title: string;
+  action: string;
+}
+
+/** IbcHorusActionPacketAck defines a struct for the packet acknowledgment */
+export interface IbcHorusActionPacketAck {
+  actionID: string;
+}
+
 function createBaseBlogPacketData(): BlogPacketData {
-  return { noData: undefined, ibcPostPacket: undefined };
+  return { noData: undefined, ibcHorusActionPacket: undefined, ibcPostPacket: undefined };
 }
 
 export const BlogPacketData = {
   encode(message: BlogPacketData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.noData !== undefined) {
       NoData.encode(message.noData, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.ibcHorusActionPacket !== undefined) {
+      IbcHorusActionPacketData.encode(message.ibcHorusActionPacket, writer.uint32(26).fork()).ldelim();
     }
     if (message.ibcPostPacket !== undefined) {
       IbcPostPacketData.encode(message.ibcPostPacket, writer.uint32(18).fork()).ldelim();
@@ -51,6 +69,9 @@ export const BlogPacketData = {
         case 1:
           message.noData = NoData.decode(reader, reader.uint32());
           break;
+        case 3:
+          message.ibcHorusActionPacket = IbcHorusActionPacketData.decode(reader, reader.uint32());
+          break;
         case 2:
           message.ibcPostPacket = IbcPostPacketData.decode(reader, reader.uint32());
           break;
@@ -65,6 +86,9 @@ export const BlogPacketData = {
   fromJSON(object: any): BlogPacketData {
     return {
       noData: isSet(object.noData) ? NoData.fromJSON(object.noData) : undefined,
+      ibcHorusActionPacket: isSet(object.ibcHorusActionPacket)
+        ? IbcHorusActionPacketData.fromJSON(object.ibcHorusActionPacket)
+        : undefined,
       ibcPostPacket: isSet(object.ibcPostPacket) ? IbcPostPacketData.fromJSON(object.ibcPostPacket) : undefined,
     };
   },
@@ -72,6 +96,9 @@ export const BlogPacketData = {
   toJSON(message: BlogPacketData): unknown {
     const obj: any = {};
     message.noData !== undefined && (obj.noData = message.noData ? NoData.toJSON(message.noData) : undefined);
+    message.ibcHorusActionPacket !== undefined && (obj.ibcHorusActionPacket = message.ibcHorusActionPacket
+      ? IbcHorusActionPacketData.toJSON(message.ibcHorusActionPacket)
+      : undefined);
     message.ibcPostPacket !== undefined
       && (obj.ibcPostPacket = message.ibcPostPacket ? IbcPostPacketData.toJSON(message.ibcPostPacket) : undefined);
     return obj;
@@ -81,6 +108,9 @@ export const BlogPacketData = {
     const message = createBaseBlogPacketData();
     message.noData = (object.noData !== undefined && object.noData !== null)
       ? NoData.fromPartial(object.noData)
+      : undefined;
+    message.ibcHorusActionPacket = (object.ibcHorusActionPacket !== undefined && object.ibcHorusActionPacket !== null)
+      ? IbcHorusActionPacketData.fromPartial(object.ibcHorusActionPacket)
       : undefined;
     message.ibcPostPacket = (object.ibcPostPacket !== undefined && object.ibcPostPacket !== null)
       ? IbcPostPacketData.fromPartial(object.ibcPostPacket)
@@ -238,6 +268,111 @@ export const IbcPostPacketAck = {
   fromPartial<I extends Exact<DeepPartial<IbcPostPacketAck>, I>>(object: I): IbcPostPacketAck {
     const message = createBaseIbcPostPacketAck();
     message.postID = object.postID ?? "";
+    return message;
+  },
+};
+
+function createBaseIbcHorusActionPacketData(): IbcHorusActionPacketData {
+  return { title: "", action: "" };
+}
+
+export const IbcHorusActionPacketData = {
+  encode(message: IbcHorusActionPacketData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.action !== "") {
+      writer.uint32(18).string(message.action);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IbcHorusActionPacketData {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIbcHorusActionPacketData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.action = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IbcHorusActionPacketData {
+    return {
+      title: isSet(object.title) ? String(object.title) : "",
+      action: isSet(object.action) ? String(object.action) : "",
+    };
+  },
+
+  toJSON(message: IbcHorusActionPacketData): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.action !== undefined && (obj.action = message.action);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IbcHorusActionPacketData>, I>>(object: I): IbcHorusActionPacketData {
+    const message = createBaseIbcHorusActionPacketData();
+    message.title = object.title ?? "";
+    message.action = object.action ?? "";
+    return message;
+  },
+};
+
+function createBaseIbcHorusActionPacketAck(): IbcHorusActionPacketAck {
+  return { actionID: "" };
+}
+
+export const IbcHorusActionPacketAck = {
+  encode(message: IbcHorusActionPacketAck, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.actionID !== "") {
+      writer.uint32(10).string(message.actionID);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IbcHorusActionPacketAck {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIbcHorusActionPacketAck();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.actionID = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IbcHorusActionPacketAck {
+    return { actionID: isSet(object.actionID) ? String(object.actionID) : "" };
+  },
+
+  toJSON(message: IbcHorusActionPacketAck): unknown {
+    const obj: any = {};
+    message.actionID !== undefined && (obj.actionID = message.actionID);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IbcHorusActionPacketAck>, I>>(object: I): IbcHorusActionPacketAck {
+    const message = createBaseIbcHorusActionPacketAck();
+    message.actionID = object.actionID ?? "";
     return message;
   },
 };
