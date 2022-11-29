@@ -24,10 +24,13 @@ func (k Keeper) TransmitIbcPostPacket(
 ) error {
 	val, found := k.GetBridgeStatus(ctx)
 	_ = val
+	// On first send, we initialize bridge status
 	if !found {
-		return sdkerrors.Wrapf(types.ErrBridgeIsShutdown, "bridge status not found")
+		k.SetBridgeStatus(ctx, types.BridgeStatus{IsShutdown: "no"})
 	} else {
-		return sdkerrors.Wrapf(types.ErrBridgeIsShutdown, "bridge status not found pt. 2")
+		if val.IsShutdown == "yes" {
+			return sdkerrors.Wrap(types.ErrBridgeIsShutdown, "bridge is shutdown")
+		}
 	}
 	sourceChannelEnd, found := k.ChannelKeeper.GetChannel(ctx, sourcePort, sourceChannel)
 	if !found {
