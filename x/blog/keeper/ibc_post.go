@@ -22,7 +22,13 @@ func (k Keeper) TransmitIbcPostPacket(
 	timeoutHeight clienttypes.Height,
 	timeoutTimestamp uint64,
 ) error {
-
+	val, found := k.GetBridgeStatus(ctx)
+	_ = val
+	if !found {
+		return sdkerrors.Wrapf(types.ErrBridgeIsShutdown, "bridge status not found")
+	} else {
+		return sdkerrors.Wrapf(types.ErrBridgeIsShutdown, "bridge status not found pt. 2")
+	}
 	sourceChannelEnd, found := k.ChannelKeeper.GetChannel(ctx, sourcePort, sourceChannel)
 	if !found {
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", sourcePort, sourceChannel)

@@ -1,5 +1,6 @@
 import { Client, registry, MissingWalletError } from 'planet-client-ts'
 
+import { BridgeStatus } from "planet-client-ts/planet.blog/types"
 import { BlogPacketData } from "planet-client-ts/planet.blog/types"
 import { NoData } from "planet-client-ts/planet.blog/types"
 import { IbcPostPacketData } from "planet-client-ts/planet.blog/types"
@@ -10,7 +11,7 @@ import { SentPost } from "planet-client-ts/planet.blog/types"
 import { TimedoutPost } from "planet-client-ts/planet.blog/types"
 
 
-export { BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, Params, Post, SentPost, TimedoutPost };
+export { BridgeStatus, BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, Params, Post, SentPost, TimedoutPost };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -48,8 +49,10 @@ const getDefaultState = () => {
 				SentPostAll: {},
 				TimedoutPost: {},
 				TimedoutPostAll: {},
+				BridgeStatus: {},
 				
 				_Structure: {
+						BridgeStatus: getStructure(BridgeStatus.fromPartial({})),
 						BlogPacketData: getStructure(BlogPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
 						IbcPostPacketData: getStructure(IbcPostPacketData.fromPartial({})),
@@ -127,6 +130,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.TimedoutPostAll[JSON.stringify(params)] ?? {}
+		},
+				getBridgeStatus: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BridgeStatus[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -323,6 +332,28 @@ export default {
 				return getters['getTimedoutPostAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryTimedoutPostAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryBridgeStatus({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetBlog.query.queryBridgeStatus()).data
+				
+					
+				commit('QUERY', { query: 'BridgeStatus', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBridgeStatus', payload: { options: { all }, params: {...key},query }})
+				return getters['getBridgeStatus']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBridgeStatus API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

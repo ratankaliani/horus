@@ -1,3 +1,4 @@
+import { BridgeStatus } from "./types/planet/blog/bridge_status"
 import { BlogPacketData } from "./types/planet/blog/packet"
 import { NoData } from "./types/planet/blog/packet"
 import { IbcPostPacketData } from "./types/planet/blog/packet"
@@ -9,6 +10,7 @@ import { TimedoutPost } from "./types/planet/blog/timedout_post"
 
 
 export {     
+    BridgeStatus,
     BlogPacketData,
     NoData,
     IbcPostPacketData,

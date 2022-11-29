@@ -44682,6 +44682,41 @@ paths:
           format: uint64
       tags:
         - Query
+  /planet/blog/bridge_status:
+    get:
+      summary: Queries a BridgeStatus by index.
+      operationId: PlanetBlogBridgeStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BridgeStatus:
+                type: object
+                properties:
+                  isShutdown:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /planet/blog/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -74806,6 +74841,11 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  planet.blog.BridgeStatus:
+    type: object
+    properties:
+      isShutdown:
+        type: string
   planet.blog.MsgSendIbcPostResponse:
     type: object
   planet.blog.Params:
@@ -74954,6 +74994,14 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  planet.blog.QueryGetBridgeStatusResponse:
+    type: object
+    properties:
+      BridgeStatus:
+        type: object
+        properties:
+          isShutdown:
+            type: string
   planet.blog.QueryGetPostResponse:
     type: object
     properties:

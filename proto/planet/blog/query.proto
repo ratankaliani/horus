@@ -8,6 +8,7 @@ import "planet/blog/params.proto";
 import "planet/blog/post.proto";
 import "planet/blog/sent_post.proto";
 import "planet/blog/timedout_post.proto";
+import "planet/blog/bridge_status.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "planet/x/blog/types";
@@ -48,6 +49,10 @@ service Query {
 		option (google.api.http).get = "/planet/blog/timedout_post";
 	}
 
+// Queries a BridgeStatus by index.
+	rpc BridgeStatus(QueryGetBridgeStatusRequest) returns (QueryGetBridgeStatusResponse) {
+		option (google.api.http).get = "/planet/blog/bridge_status";
+	}
 // this line is used by starport scaffolding # 2
 }
 
@@ -111,4 +116,9 @@ message QueryAllTimedoutPostResponse {
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+message QueryGetBridgeStatusRequest {}
+
+message QueryGetBridgeStatusResponse {
+	BridgeStatus BridgeStatus = 1 [(gogoproto.nullable) = false];
+}
 // this line is used by starport scaffolding # 3

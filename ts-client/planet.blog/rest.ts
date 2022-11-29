@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface BlogBridgeStatus {
+  isShutdown?: string;
+}
+
 export type BlogMsgSendIbcPostResponse = object;
 
 /**
@@ -67,6 +71,10 @@ export interface BlogQueryAllTimedoutPostResponse {
    *  }
    */
   pagination?: V1Beta1PageResponse;
+}
+
+export interface BlogQueryGetBridgeStatusResponse {
+  BridgeStatus?: BlogBridgeStatus;
 }
 
 export interface BlogQueryGetPostResponse {
@@ -310,10 +318,26 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title planet/blog/genesis.proto
+ * @title planet/blog/bridge_status.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBridgeStatus
+   * @summary Queries a BridgeStatus by index.
+   * @request GET:/planet/blog/bridge_status
+   */
+  queryBridgeStatus = (params: RequestParams = {}) =>
+    this.request<BlogQueryGetBridgeStatusResponse, RpcStatus>({
+      path: `/planet/blog/bridge_status`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

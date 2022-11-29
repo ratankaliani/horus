@@ -49,6 +49,9 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				TimedoutPostCount: 2,
+				BridgeStatus: &types.BridgeStatus{
+					IsShutdown: "28",
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,

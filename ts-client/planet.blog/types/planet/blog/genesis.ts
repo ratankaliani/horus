@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { BridgeStatus } from "./bridge_status";
 import { Params } from "./params";
 import { Post } from "./post";
 import { SentPost } from "./sent_post";
@@ -17,8 +18,9 @@ export interface GenesisState {
   sentPostList: SentPost[];
   sentPostCount: number;
   timedoutPostList: TimedoutPost[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   timedoutPostCount: number;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  bridgeStatus: BridgeStatus | undefined;
 }
 
 function createBaseGenesisState(): GenesisState {
@@ -31,6 +33,7 @@ function createBaseGenesisState(): GenesisState {
     sentPostCount: 0,
     timedoutPostList: [],
     timedoutPostCount: 0,
+    bridgeStatus: undefined,
   };
 }
 
@@ -59,6 +62,9 @@ export const GenesisState = {
     }
     if (message.timedoutPostCount !== 0) {
       writer.uint32(64).uint64(message.timedoutPostCount);
+    }
+    if (message.bridgeStatus !== undefined) {
+      BridgeStatus.encode(message.bridgeStatus, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -94,6 +100,9 @@ export const GenesisState = {
         case 8:
           message.timedoutPostCount = longToNumber(reader.uint64() as Long);
           break;
+        case 9:
+          message.bridgeStatus = BridgeStatus.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -116,6 +125,7 @@ export const GenesisState = {
         ? object.timedoutPostList.map((e: any) => TimedoutPost.fromJSON(e))
         : [],
       timedoutPostCount: isSet(object.timedoutPostCount) ? Number(object.timedoutPostCount) : 0,
+      bridgeStatus: isSet(object.bridgeStatus) ? BridgeStatus.fromJSON(object.bridgeStatus) : undefined,
     };
   },
 
@@ -141,6 +151,8 @@ export const GenesisState = {
       obj.timedoutPostList = [];
     }
     message.timedoutPostCount !== undefined && (obj.timedoutPostCount = Math.round(message.timedoutPostCount));
+    message.bridgeStatus !== undefined
+      && (obj.bridgeStatus = message.bridgeStatus ? BridgeStatus.toJSON(message.bridgeStatus) : undefined);
     return obj;
   },
 
@@ -156,6 +168,9 @@ export const GenesisState = {
     message.sentPostCount = object.sentPostCount ?? 0;
     message.timedoutPostList = object.timedoutPostList?.map((e) => TimedoutPost.fromPartial(e)) || [];
     message.timedoutPostCount = object.timedoutPostCount ?? 0;
+    message.bridgeStatus = (object.bridgeStatus !== undefined && object.bridgeStatus !== null)
+      ? BridgeStatus.fromPartial(object.bridgeStatus)
+      : undefined;
     return message;
   },
 };

@@ -15,6 +15,7 @@ func DefaultGenesis() *GenesisState {
 		PostList:         []Post{},
 		SentPostList:     []SentPost{},
 		TimedoutPostList: []TimedoutPost{},
+		BridgeStatus:     nil,
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}

@@ -43,3 +43,7 @@ const (
 	TimedoutPostKey      = "TimedoutPost/value/"
 	TimedoutPostCountKey = "TimedoutPost/count/"
 )
+
+const (
+	BridgeStatusKey = "BridgeStatus/value/"
+)

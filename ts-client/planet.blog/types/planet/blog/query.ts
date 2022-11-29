@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagination";
+import { BridgeStatus } from "./bridge_status";
 import { Params } from "./params";
 import { Post } from "./post";
 import { SentPost } from "./sent_post";
@@ -68,6 +69,13 @@ export interface QueryAllTimedoutPostRequest {
 export interface QueryAllTimedoutPostResponse {
   TimedoutPost: TimedoutPost[];
   pagination: PageResponse | undefined;
+}
+
+export interface QueryGetBridgeStatusRequest {
+}
+
+export interface QueryGetBridgeStatusResponse {
+  BridgeStatus: BridgeStatus | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -792,6 +800,95 @@ export const QueryAllTimedoutPostResponse = {
   },
 };
 
+function createBaseQueryGetBridgeStatusRequest(): QueryGetBridgeStatusRequest {
+  return {};
+}
+
+export const QueryGetBridgeStatusRequest = {
+  encode(_: QueryGetBridgeStatusRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBridgeStatusRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetBridgeStatusRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryGetBridgeStatusRequest {
+    return {};
+  },
+
+  toJSON(_: QueryGetBridgeStatusRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetBridgeStatusRequest>, I>>(_: I): QueryGetBridgeStatusRequest {
+    const message = createBaseQueryGetBridgeStatusRequest();
+    return message;
+  },
+};
+
+function createBaseQueryGetBridgeStatusResponse(): QueryGetBridgeStatusResponse {
+  return { BridgeStatus: undefined };
+}
+
+export const QueryGetBridgeStatusResponse = {
+  encode(message: QueryGetBridgeStatusResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.BridgeStatus !== undefined) {
+      BridgeStatus.encode(message.BridgeStatus, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBridgeStatusResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetBridgeStatusResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.BridgeStatus = BridgeStatus.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetBridgeStatusResponse {
+    return { BridgeStatus: isSet(object.BridgeStatus) ? BridgeStatus.fromJSON(object.BridgeStatus) : undefined };
+  },
+
+  toJSON(message: QueryGetBridgeStatusResponse): unknown {
+    const obj: any = {};
+    message.BridgeStatus !== undefined
+      && (obj.BridgeStatus = message.BridgeStatus ? BridgeStatus.toJSON(message.BridgeStatus) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetBridgeStatusResponse>, I>>(object: I): QueryGetBridgeStatusResponse {
+    const message = createBaseQueryGetBridgeStatusResponse();
+    message.BridgeStatus = (object.BridgeStatus !== undefined && object.BridgeStatus !== null)
+      ? BridgeStatus.fromPartial(object.BridgeStatus)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -808,6 +905,8 @@ export interface Query {
   TimedoutPost(request: QueryGetTimedoutPostRequest): Promise<QueryGetTimedoutPostResponse>;
   /** Queries a list of TimedoutPost items. */
   TimedoutPostAll(request: QueryAllTimedoutPostRequest): Promise<QueryAllTimedoutPostResponse>;
+  /** Queries a BridgeStatus by index. */
+  BridgeStatus(request: QueryGetBridgeStatusRequest): Promise<QueryGetBridgeStatusResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -821,6 +920,7 @@ export class QueryClientImpl implements Query {
     this.SentPostAll = this.SentPostAll.bind(this);
     this.TimedoutPost = this.TimedoutPost.bind(this);
     this.TimedoutPostAll = this.TimedoutPostAll.bind(this);
+    this.BridgeStatus = this.BridgeStatus.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -862,6 +962,12 @@ export class QueryClientImpl implements Query {
     const data = QueryAllTimedoutPostRequest.encode(request).finish();
     const promise = this.rpc.request("planet.blog.Query", "TimedoutPostAll", data);
     return promise.then((data) => QueryAllTimedoutPostResponse.decode(new _m0.Reader(data)));
+  }
+
+  BridgeStatus(request: QueryGetBridgeStatusRequest): Promise<QueryGetBridgeStatusResponse> {
+    const data = QueryGetBridgeStatusRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.blog.Query", "BridgeStatus", data);
+    return promise.then((data) => QueryGetBridgeStatusResponse.decode(new _m0.Reader(data)));
   }
 }
 

@@ -18,6 +18,7 @@ export interface NoData {
 export interface IbcPostPacketData {
   title: string;
   content: string;
+  creator: string;
 }
 
 /** IbcPostPacketAck defines a struct for the packet acknowledgment */
@@ -128,7 +129,7 @@ export const NoData = {
 };
 
 function createBaseIbcPostPacketData(): IbcPostPacketData {
-  return { title: "", content: "" };
+  return { title: "", content: "", creator: "" };
 }
 
 export const IbcPostPacketData = {
@@ -138,6 +139,9 @@ export const IbcPostPacketData = {
     }
     if (message.content !== "") {
       writer.uint32(18).string(message.content);
+    }
+    if (message.creator !== "") {
+      writer.uint32(26).string(message.creator);
     }
     return writer;
   },
@@ -155,6 +159,9 @@ export const IbcPostPacketData = {
         case 2:
           message.content = reader.string();
           break;
+        case 3:
+          message.creator = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -167,6 +174,7 @@ export const IbcPostPacketData = {
     return {
       title: isSet(object.title) ? String(object.title) : "",
       content: isSet(object.content) ? String(object.content) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
     };
   },
 
@@ -174,6 +182,7 @@ export const IbcPostPacketData = {
     const obj: any = {};
     message.title !== undefined && (obj.title = message.title);
     message.content !== undefined && (obj.content = message.content);
+    message.creator !== undefined && (obj.creator = message.creator);
     return obj;
   },
 
@@ -181,6 +190,7 @@ export const IbcPostPacketData = {
     const message = createBaseIbcPostPacketData();
     message.title = object.title ?? "";
     message.content = object.content ?? "";
+    message.creator = object.creator ?? "";
     return message;
   },
 };
