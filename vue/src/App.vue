@@ -57,4 +57,8 @@ export default {
 body {
   margin: 0;
 }
+
+#app {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}
 </style>
