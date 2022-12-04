@@ -10,6 +10,10 @@ accounts:
   coins:
   - 1000token
   - 1000000000stake
+- name: eye
+  coins:
+  - 1000token
+  - 1000000000stake
 - name: bob
   coins:
   - 500token
