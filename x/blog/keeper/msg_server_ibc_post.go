@@ -16,7 +16,6 @@ func (k msgServer) SendIbcPost(goCtx context.Context, msg *types.MsgSendIbcPost)
 
 	// Construct the packet
 	var packet types.IbcPostPacketData
-
 	packet.Title = msg.Title
 	packet.Content = msg.Content
 	packet.Creator = msg.Creator
