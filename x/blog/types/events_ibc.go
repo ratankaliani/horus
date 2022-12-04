@@ -2,8 +2,9 @@ package types
 
 // IBC events
 const (
-	EventTypeTimeout       = "timeout"
-	EventTypeIbcPostPacket = "ibcPost_packet"
+	EventTypeTimeout              = "timeout"
+	EventTypeIbcPostPacket        = "ibcPost_packet"
+	EventTypeIbcHorusActionPacket = "ibcHorusAction_packet"
 	// this line is used by starport scaffolding # ibc/packet/event
 
 	AttributeKeyAckSuccess = "success"

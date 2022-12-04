@@ -168,6 +168,25 @@ func (im IBCModule) OnRecvPacket(
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
 			),
 		)
+	case *types.BlogPacketData_IbcHorusActionPacket:
+		packetAck, err := im.keeper.OnRecvIbcHorusActionPacket(ctx, modulePacket, *packet.IbcHorusActionPacket)
+		if err != nil {
+			ack = channeltypes.NewErrorAcknowledgement(err)
+		} else {
+			// Encode packet acknowledgment
+			packetAckBytes, err := types.ModuleCdc.MarshalJSON(&packetAck)
+			if err != nil {
+				return channeltypes.NewErrorAcknowledgement(sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error()))
+			}
+			ack = channeltypes.NewResultAcknowledgement(sdk.MustSortJSON(packetAckBytes))
+		}
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeIbcHorusActionPacket,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
+			),
+		)
 		// this line is used by starport scaffolding # ibc/packet/module/recv
 	default:
 		err := fmt.Errorf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -207,6 +226,12 @@ func (im IBCModule) OnAcknowledgementPacket(
 			return err
 		}
 		eventType = types.EventTypeIbcPostPacket
+	case *types.BlogPacketData_IbcHorusActionPacket:
+		err := im.keeper.OnAcknowledgementIbcHorusActionPacket(ctx, modulePacket, *packet.IbcHorusActionPacket, ack)
+		if err != nil {
+			return err
+		}
+		eventType = types.EventTypeIbcHorusActionPacket
 		// this line is used by starport scaffolding # ibc/packet/module/ack
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -256,6 +281,11 @@ func (im IBCModule) OnTimeoutPacket(
 	switch packet := modulePacketData.Packet.(type) {
 	case *types.BlogPacketData_IbcPostPacket:
 		err := im.keeper.OnTimeoutIbcPostPacket(ctx, modulePacket, *packet.IbcPostPacket)
+		if err != nil {
+			return err
+		}
+	case *types.BlogPacketData_IbcHorusActionPacket:
+		err := im.keeper.OnTimeoutIbcHorusActionPacket(ctx, modulePacket, *packet.IbcHorusActionPacket)
 		if err != nil {
 			return err
 		}

@@ -9,6 +9,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface BlogBridgeStatus {
+  isShutdown?: string;
+}
+
+export type BlogMsgSendIbcHorusActionResponse = object;
+
 export type BlogMsgSendIbcPostResponse = object;
 
 /**
@@ -26,6 +32,21 @@ export interface BlogPost {
 
 export interface BlogQueryAllPostResponse {
   Post?: BlogPost[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface BlogQueryAllSentActionResponse {
+  SentAction?: BlogSentAction[];
 
   /**
    * PageResponse is to be embedded in gRPC response messages where the
@@ -69,8 +90,16 @@ export interface BlogQueryAllTimedoutPostResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface BlogQueryGetBridgeStatusResponse {
+  BridgeStatus?: BlogBridgeStatus;
+}
+
 export interface BlogQueryGetPostResponse {
   Post?: BlogPost;
+}
+
+export interface BlogQueryGetSentActionResponse {
+  SentAction?: BlogSentAction;
 }
 
 export interface BlogQueryGetSentPostResponse {
@@ -87,6 +116,16 @@ export interface BlogQueryGetTimedoutPostResponse {
 export interface BlogQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: BlogParams;
+}
+
+export interface BlogSentAction {
+  /** @format uint64 */
+  id?: string;
+  actionID?: string;
+  title?: string;
+  chain?: string;
+  action?: string;
+  creator?: string;
 }
 
 export interface BlogSentPost {
@@ -310,10 +349,26 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title planet/blog/genesis.proto
+ * @title planet/blog/bridge_status.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBridgeStatus
+   * @summary Queries a BridgeStatus by index.
+   * @request GET:/planet/blog/bridge_status
+   */
+  queryBridgeStatus = (params: RequestParams = {}) =>
+    this.request<BlogQueryGetBridgeStatusResponse, RpcStatus>({
+      path: `/planet/blog/bridge_status`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
@@ -367,6 +422,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryPost = (id: string, params: RequestParams = {}) =>
     this.request<BlogQueryGetPostResponse, RpcStatus>({
       path: `/planet/blog/post/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentActionAll
+   * @summary Queries a list of SentAction items.
+   * @request GET:/planet/blog/sent_action
+   */
+  querySentActionAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<BlogQueryAllSentActionResponse, RpcStatus>({
+      path: `/planet/blog/sent_action`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentAction
+   * @summary Queries a SentAction by id.
+   * @request GET:/planet/blog/sent_action/{id}
+   */
+  querySentAction = (id: string, params: RequestParams = {}) =>
+    this.request<BlogQueryGetSentActionResponse, RpcStatus>({
+      path: `/planet/blog/sent_action/${id}`,
       method: "GET",
       format: "json",
       ...params,

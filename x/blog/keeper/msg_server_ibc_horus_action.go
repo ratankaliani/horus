@@ -9,19 +9,20 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v5/modules/core/02-client/types"
 )
 
-func (k msgServer) SendIbcPost(goCtx context.Context, msg *types.MsgSendIbcPost) (*types.MsgSendIbcPostResponse, error) {
+func (k msgServer) SendIbcHorusAction(goCtx context.Context, msg *types.MsgSendIbcHorusAction) (*types.MsgSendIbcHorusActionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: logic before transmitting the packet
 
 	// Construct the packet
-	var packet types.IbcPostPacketData
+	var packet types.IbcHorusActionPacketData
+
 	packet.Title = msg.Title
-	packet.Content = msg.Content
+	packet.Action = msg.Action
 	packet.Creator = msg.Creator
 
 	// Transmit the packet
-	err := k.TransmitIbcPostPacket(
+	err := k.TransmitIbcHorusActionPacket(
 		ctx,
 		packet,
 		msg.Port,
@@ -33,5 +34,5 @@ func (k msgServer) SendIbcPost(goCtx context.Context, msg *types.MsgSendIbcPost)
 		return nil, err
 	}
 
-	return &types.MsgSendIbcPostResponse{}, nil
+	return &types.MsgSendIbcHorusActionResponse{}, nil
 }

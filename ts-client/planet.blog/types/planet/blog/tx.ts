@@ -16,6 +16,18 @@ export interface MsgSendIbcPost {
 export interface MsgSendIbcPostResponse {
 }
 
+export interface MsgSendIbcHorusAction {
+  creator: string;
+  port: string;
+  channelID: string;
+  timeoutTimestamp: number;
+  title: string;
+  action: string;
+}
+
+export interface MsgSendIbcHorusActionResponse {
+}
+
 function createBaseMsgSendIbcPost(): MsgSendIbcPost {
   return { creator: "", port: "", channelID: "", timeoutTimestamp: 0, title: "", content: "" };
 }
@@ -149,10 +161,144 @@ export const MsgSendIbcPostResponse = {
   },
 };
 
+function createBaseMsgSendIbcHorusAction(): MsgSendIbcHorusAction {
+  return { creator: "", port: "", channelID: "", timeoutTimestamp: 0, title: "", action: "" };
+}
+
+export const MsgSendIbcHorusAction = {
+  encode(message: MsgSendIbcHorusAction, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
+    if (message.channelID !== "") {
+      writer.uint32(26).string(message.channelID);
+    }
+    if (message.timeoutTimestamp !== 0) {
+      writer.uint32(32).uint64(message.timeoutTimestamp);
+    }
+    if (message.title !== "") {
+      writer.uint32(42).string(message.title);
+    }
+    if (message.action !== "") {
+      writer.uint32(50).string(message.action);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSendIbcHorusAction {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSendIbcHorusAction();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.port = reader.string();
+          break;
+        case 3:
+          message.channelID = reader.string();
+          break;
+        case 4:
+          message.timeoutTimestamp = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.title = reader.string();
+          break;
+        case 6:
+          message.action = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSendIbcHorusAction {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      port: isSet(object.port) ? String(object.port) : "",
+      channelID: isSet(object.channelID) ? String(object.channelID) : "",
+      timeoutTimestamp: isSet(object.timeoutTimestamp) ? Number(object.timeoutTimestamp) : 0,
+      title: isSet(object.title) ? String(object.title) : "",
+      action: isSet(object.action) ? String(object.action) : "",
+    };
+  },
+
+  toJSON(message: MsgSendIbcHorusAction): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.port !== undefined && (obj.port = message.port);
+    message.channelID !== undefined && (obj.channelID = message.channelID);
+    message.timeoutTimestamp !== undefined && (obj.timeoutTimestamp = Math.round(message.timeoutTimestamp));
+    message.title !== undefined && (obj.title = message.title);
+    message.action !== undefined && (obj.action = message.action);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSendIbcHorusAction>, I>>(object: I): MsgSendIbcHorusAction {
+    const message = createBaseMsgSendIbcHorusAction();
+    message.creator = object.creator ?? "";
+    message.port = object.port ?? "";
+    message.channelID = object.channelID ?? "";
+    message.timeoutTimestamp = object.timeoutTimestamp ?? 0;
+    message.title = object.title ?? "";
+    message.action = object.action ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSendIbcHorusActionResponse(): MsgSendIbcHorusActionResponse {
+  return {};
+}
+
+export const MsgSendIbcHorusActionResponse = {
+  encode(_: MsgSendIbcHorusActionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSendIbcHorusActionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSendIbcHorusActionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSendIbcHorusActionResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSendIbcHorusActionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSendIbcHorusActionResponse>, I>>(_: I): MsgSendIbcHorusActionResponse {
+    const message = createBaseMsgSendIbcHorusActionResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SendIbcPost(request: MsgSendIbcPost): Promise<MsgSendIbcPostResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SendIbcHorusAction(request: MsgSendIbcHorusAction): Promise<MsgSendIbcHorusActionResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -160,11 +306,18 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.SendIbcPost = this.SendIbcPost.bind(this);
+    this.SendIbcHorusAction = this.SendIbcHorusAction.bind(this);
   }
   SendIbcPost(request: MsgSendIbcPost): Promise<MsgSendIbcPostResponse> {
     const data = MsgSendIbcPost.encode(request).finish();
     const promise = this.rpc.request("planet.blog.Msg", "SendIbcPost", data);
     return promise.then((data) => MsgSendIbcPostResponse.decode(new _m0.Reader(data)));
+  }
+
+  SendIbcHorusAction(request: MsgSendIbcHorusAction): Promise<MsgSendIbcHorusActionResponse> {
+    const data = MsgSendIbcHorusAction.encode(request).finish();
+    const promise = this.rpc.request("planet.blog.Msg", "SendIbcHorusAction", data);
+    return promise.then((data) => MsgSendIbcHorusActionResponse.decode(new _m0.Reader(data)));
   }
 }
 

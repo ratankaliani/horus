@@ -8,9 +8,10 @@ import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 import { MsgSendIbcPost } from "./types/planet/blog/tx";
+import { MsgSendIbcHorusAction } from "./types/planet/blog/tx";
 
 
-export { MsgSendIbcPost };
+export { MsgSendIbcPost, MsgSendIbcHorusAction };
 
 type sendMsgSendIbcPostParams = {
   value: MsgSendIbcPost,
@@ -18,9 +19,19 @@ type sendMsgSendIbcPostParams = {
   memo?: string
 };
 
+type sendMsgSendIbcHorusActionParams = {
+  value: MsgSendIbcHorusAction,
+  fee?: StdFee,
+  memo?: string
+};
+
 
 type msgSendIbcPostParams = {
   value: MsgSendIbcPost,
+};
+
+type msgSendIbcHorusActionParams = {
+  value: MsgSendIbcHorusAction,
 };
 
 
@@ -55,12 +66,34 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgSendIbcHorusAction({ value, fee, memo }: sendMsgSendIbcHorusActionParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgSendIbcHorusAction: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgSendIbcHorusAction({ value: MsgSendIbcHorusAction.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgSendIbcHorusAction: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		
 		msgSendIbcPost({ value }: msgSendIbcPostParams): EncodeObject {
 			try {
 				return { typeUrl: "/planet.blog.MsgSendIbcPost", value: MsgSendIbcPost.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgSendIbcPost: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgSendIbcHorusAction({ value }: msgSendIbcHorusActionParams): EncodeObject {
+			try {
+				return { typeUrl: "/planet.blog.MsgSendIbcHorusAction", value: MsgSendIbcHorusAction.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgSendIbcHorusAction: Could not create message: ' + e.message)
 			}
 		},
 		

@@ -6,6 +6,8 @@ import "planet/blog/params.proto";
 import "planet/blog/post.proto";
 import "planet/blog/sent_post.proto";
 import "planet/blog/timedout_post.proto";
+import "planet/blog/bridge_status.proto";
+import "planet/blog/sent_action.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "planet/x/blog/types";
@@ -20,5 +22,8 @@ message GenesisState {
   uint64 sentPostCount = 6;
   repeated TimedoutPost timedoutPostList = 7 [(gogoproto.nullable) = false];
   uint64 timedoutPostCount = 8;
+  BridgeStatus bridgeStatus = 9;
+  repeated SentAction sentActionList = 10 [(gogoproto.nullable) = false];
+  uint64 sentActionCount = 11;
   // this line is used by starport scaffolding # genesis/proto/state
 }

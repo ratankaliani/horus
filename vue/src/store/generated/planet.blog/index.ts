@@ -1,16 +1,20 @@
 import { Client, registry, MissingWalletError } from 'planet-client-ts'
 
+import { BridgeStatus } from "planet-client-ts/planet.blog/types"
 import { BlogPacketData } from "planet-client-ts/planet.blog/types"
 import { NoData } from "planet-client-ts/planet.blog/types"
 import { IbcPostPacketData } from "planet-client-ts/planet.blog/types"
 import { IbcPostPacketAck } from "planet-client-ts/planet.blog/types"
+import { IbcHorusActionPacketData } from "planet-client-ts/planet.blog/types"
+import { IbcHorusActionPacketAck } from "planet-client-ts/planet.blog/types"
 import { Params } from "planet-client-ts/planet.blog/types"
 import { Post } from "planet-client-ts/planet.blog/types"
+import { SentAction } from "planet-client-ts/planet.blog/types"
 import { SentPost } from "planet-client-ts/planet.blog/types"
 import { TimedoutPost } from "planet-client-ts/planet.blog/types"
 
 
-export { BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, Params, Post, SentPost, TimedoutPost };
+export { BridgeStatus, BlogPacketData, NoData, IbcPostPacketData, IbcPostPacketAck, IbcHorusActionPacketData, IbcHorusActionPacketAck, Params, Post, SentAction, SentPost, TimedoutPost };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -48,14 +52,21 @@ const getDefaultState = () => {
 				SentPostAll: {},
 				TimedoutPost: {},
 				TimedoutPostAll: {},
+				BridgeStatus: {},
+				SentAction: {},
+				SentActionAll: {},
 				
 				_Structure: {
+						BridgeStatus: getStructure(BridgeStatus.fromPartial({})),
 						BlogPacketData: getStructure(BlogPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
 						IbcPostPacketData: getStructure(IbcPostPacketData.fromPartial({})),
 						IbcPostPacketAck: getStructure(IbcPostPacketAck.fromPartial({})),
+						IbcHorusActionPacketData: getStructure(IbcHorusActionPacketData.fromPartial({})),
+						IbcHorusActionPacketAck: getStructure(IbcHorusActionPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						Post: getStructure(Post.fromPartial({})),
+						SentAction: getStructure(SentAction.fromPartial({})),
 						SentPost: getStructure(SentPost.fromPartial({})),
 						TimedoutPost: getStructure(TimedoutPost.fromPartial({})),
 						
@@ -127,6 +138,24 @@ export default {
 						(<any> params).query=null
 					}
 			return state.TimedoutPostAll[JSON.stringify(params)] ?? {}
+		},
+				getBridgeStatus: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BridgeStatus[JSON.stringify(params)] ?? {}
+		},
+				getSentAction: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.SentAction[JSON.stringify(params)] ?? {}
+		},
+				getSentActionAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.SentActionAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -328,6 +357,76 @@ export default {
 		},
 		
 		
+		
+		
+		 		
+		
+		
+		async QueryBridgeStatus({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetBlog.query.queryBridgeStatus()).data
+				
+					
+				commit('QUERY', { query: 'BridgeStatus', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBridgeStatus', payload: { options: { all }, params: {...key},query }})
+				return getters['getBridgeStatus']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBridgeStatus API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QuerySentAction({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetBlog.query.querySentAction( key.id)).data
+				
+					
+				commit('QUERY', { query: 'SentAction', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QuerySentAction', payload: { options: { all }, params: {...key},query }})
+				return getters['getSentAction']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QuerySentAction API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QuerySentActionAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetBlog.query.querySentActionAll(query ?? undefined)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.PlanetBlog.query.querySentActionAll({...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'SentActionAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QuerySentActionAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getSentActionAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QuerySentActionAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
 		async sendMsgSendIbcPost({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -338,6 +437,19 @@ export default {
 					throw new Error('TxClient:MsgSendIbcPost:Init Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new Error('TxClient:MsgSendIbcPost:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgSendIbcHorusAction({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const result = await client.PlanetBlog.tx.sendMsgSendIbcHorusAction({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendIbcHorusAction:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSendIbcHorusAction:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -352,6 +464,19 @@ export default {
 					throw new Error('TxClient:MsgSendIbcPost:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgSendIbcPost:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSendIbcHorusAction({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.PlanetBlog.tx.msgSendIbcHorusAction({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendIbcHorusAction:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSendIbcHorusAction:Create Could not create message: ' + e.message)
 				}
 			}
 		},

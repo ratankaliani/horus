@@ -8,6 +8,7 @@ option go_package = "planet/x/blog/types";
 // Msg defines the Msg service.
 service Msg {
       rpc SendIbcPost(MsgSendIbcPost) returns (MsgSendIbcPostResponse);
+  rpc SendIbcHorusAction(MsgSendIbcHorusAction) returns (MsgSendIbcHorusActionResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -21,5 +22,16 @@ message MsgSendIbcPost {
 }
 
 message MsgSendIbcPostResponse {
+}
+message MsgSendIbcHorusAction {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+  string title = 5;
+  string action = 6;
+}
+
+message MsgSendIbcHorusActionResponse {
 }
 // this line is used by starport scaffolding # proto/tx/message
