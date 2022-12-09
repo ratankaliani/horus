@@ -1,5 +1,3 @@
-# Horus
-
 ![Horus cover](static/git-cover.jpg)
 
 **Horus** is a blockchain built using Cosmos SDK and Tendermint.
