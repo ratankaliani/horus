@@ -34,7 +34,7 @@ ignite chain serve -c mars.yml
 ignite chain serve -c horus.yml
 ```
 
-### Set up two IBC relayer connections\*\*
+### Set up two IBC relayer connections
 
 **Delete relayer cache**
 
