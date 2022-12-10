@@ -40,7 +40,7 @@ export default function Home() {
     {
       id: "Mars",
       position: { x: -200, y: 0 },
-      data: { label: "Mars" },
+      data: { label: "Mars (M)" },
       connectable: false,
       draggable: false,
       selectable: false,
@@ -51,7 +51,7 @@ export default function Home() {
     {
       id: "Horus",
       position: { x: 0, y: -100 },
-      data: { label: "Horus" },
+      data: { label: "Horus (H)" },
       connectable: false,
       draggable: false,
       selectable: false,
@@ -61,7 +61,7 @@ export default function Home() {
     {
       id: "Earth",
       position: { x: 200, y: 0 },
-      data: { label: "Earth" },
+      data: { label: "Earth (E)" },
       connectable: false,
       draggable: false,
       selectable: false,
@@ -95,7 +95,7 @@ export default function Home() {
       target: "Earth",
       animated: true,
       style: { stroke: "red" },
-      label: "IBC channel-0",
+      label: "Mars channel-0 | Earth channel-1",
     },
   ];
 
