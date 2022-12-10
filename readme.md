@@ -26,6 +26,16 @@ yarn add
 
 Setup & pre-shutdown demonstration!
 
+### Boot up Frontend
+
+Navigate to client/ directory and run:
+
+```
+npm install
+npm run serve
+```
+
+
 ### Boot up three chains, Earth, Mars and Horus
 
 ```
