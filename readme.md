@@ -24,7 +24,7 @@ yarn add
 
 ## Demo
 
-Setup & pre-shutdown demonstration!
+Setup & IBC invariant demonstration!
 
 ### Boot up Frontend
 
