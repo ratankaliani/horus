@@ -32,7 +32,7 @@ Navigate to client/ directory and run:
 
 ```
 npm install
-npm run serve
+npm run dev
 ```
 
 
