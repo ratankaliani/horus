@@ -151,7 +151,7 @@ export const Inbox = (props: Props) => {
       <Stack>
         <Box>
           <Heading size="lg">
-            {label + (label == "Horus" ? " Outbox" : " Inbox")}
+            {label + (label == "Mars" ? " Inbox" : " Outbox")}
           </Heading>
         </Box>
         <Divider />
