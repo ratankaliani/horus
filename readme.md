@@ -31,8 +31,8 @@ Setup & IBC invariant demonstration!
 Navigate to client/ directory and run:
 
 ```
-npm install
-npm run dev
+yarn
+yarn dev
 ```
 
 
