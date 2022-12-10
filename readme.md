@@ -24,7 +24,7 @@ yarn add
 
 ## Demo
 
-Setup & pre-shutdown demonstration!
+Setup & IBC invariant demonstration!
 
 ### Boot up Frontend
 
@@ -32,7 +32,7 @@ Navigate to client/ directory and run:
 
 ```
 npm install
-npm run serve
+npm run dev
 ```
 
 
